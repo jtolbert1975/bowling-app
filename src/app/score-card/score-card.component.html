@@ -1,0 +1,40 @@
+<div class="score-container">
+  <h1>SCORE</h1>
+  <div class="table-container">
+    <div class="display-grid header-row">
+      <div class="grid-item">Frame</div>
+      <div class="grid-item">Roll 1</div>
+      <div class="grid-item">Roll 2</div>
+      <div class="grid-item">Score</div>
+    </div>
+    <!---Frame 1-->
+    <div class="display-grid" *ngFor="let game of gameGrp">
+      <div class="grid-item">{{ game.frame }}</div>
+      <div class="grid-item">{{ game.roll1 }}</div>
+      <div class="grid-item">{{ game.roll2 }}</div>
+      <div class="grid-item">{{ game.score }}</div>
+    </div>
+
+    <!--10th Frame-->
+    <div class="display-grid" *ngIf="showFrame10">
+      <div *ngFor="let tenf of frame10" class="tenth-frame">
+        <div class="grid-item">{{ tenf.frame }}</div>
+        <div class="grid-item">{{ tenf.roll1 }}</div>
+        <div class="grid-item score-padding">
+          {{ tenf.roll2 }}
+          <span class="divider">|</span>
+          <span class="third-roll">{{ tenf.roll3 }}</span>
+        </div>
+        <div class="grid-item">{{ tenf.score }}</div>
+      </div>
+    </div>
+
+    <!---Frame Total-->
+    <div class="display-grid">
+      <div class="grid-item">Total Score</div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+    </div>
+  </div>
+</div>

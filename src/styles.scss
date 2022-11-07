@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face{
+    font-family: copperplate-gothic-light-regular;
+    src: url("./assets/fonts/copperplate gothic light regular/copperplate gothic light regular.ttf") format("opentype");
+}
+html, body {
+    margin:0 !important;
+    padding:0;
+    height: 100%;
+    width: 100vw;
+    font-family: 'copperplate-gothic-light-regular', sans-serif;
+  }
