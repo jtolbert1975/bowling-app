@@ -9,7 +9,10 @@
     </div>
     <div *ngIf="!showButton" class="reset-container">
       <span class="game-over">GAME OVER</span>
-      <div class="reset-button" (click)="onReset()">RESET</div>
+      <div class="reset-button" (click)="onReset()">NEW GAME</div>
+    </div>
+    <div class="current-roll" *ngIf="showFirstRoll">
+      <span>Roll 1 = {{ firstRoll }}</span>
     </div>
     <div>
       <app-score-card></app-score-card>

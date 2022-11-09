@@ -3,5 +3,5 @@ export interface Frame {
   roll1: any;
   roll2: any;
   roll3: any;
-  score: number;
+  score: any;
 }

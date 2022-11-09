@@ -71,6 +71,16 @@
   background-color: yellowgreen;
 }
 
+.current-roll{
+  display: flex;
+  flex-flow:  row;
+  flex: 0 1 auto;
+  width: 100%;
+  padding: 5px 0px;
+  align-items: center;
+  justify-content: center;
+}
+
 
 
  

@@ -20,10 +20,16 @@ export class AppComponent implements OnInit {
   showStart: boolean = false;
   showButton: boolean = true;
   tenthFrameCount = 0;
+  firstRoll: any = '';
+  showFirstRoll: boolean = false;
   constructor(public scoring: ScoringService) {}
 
   ngOnInit() {
     this.buttonPath = this.buttonGroup.start;
+    this.scoring.roll1$.subscribe((data) => {
+      this.firstRoll = data;
+      this.showFirstRoll = true;
+    });
   }
 
   onStart() {
@@ -44,6 +50,8 @@ export class AppComponent implements OnInit {
       count = this.frameCount.length + 1;
     }
 
+    this.showButton = this.scoring.tenthFrameRollCt === 2 ? false : true;
+
     if (this.frameCount.length <= 9) {
       if (this.rollCount === 0) {
         this.scoring.rollCalc(this.rollCount, count);
@@ -58,10 +66,12 @@ export class AppComponent implements OnInit {
         this.frameCount.push(this.frameCount.length + 1);
         count = this.frameCount.length;
         this.scoring.rollCalc(this.rollCount, count);
+        this.showFirstRoll = false;
+        this.firstRoll = '';
         this.rollCount = 0;
       }
     } else {
-      if (this.scoring.tenthFrameRollCt <= 2) {
+      if (this.scoring.tenthFrameRollCt < 3) {
         this.scoring.setTenthFrame(this.tenthFrameCount);
         this.rollCount += this.rollCount;
         this.tenthFrameCount++;

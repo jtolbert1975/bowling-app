@@ -10,6 +10,7 @@ export class ScoringService {
   roll2Pins: any = 0;
   roll3Pins: any = '';
   currentFrame = 0;
+  roll1$ = new Subject();
   gameObj$ = new Subject();
   lastFrame$ = new Subject();
   frame?: Frame;
@@ -19,6 +20,8 @@ export class ScoringService {
   strikeFrame: Array<Frame> = [];
   isBonusRoll: boolean = false;
   tenthFrameRollCt = 0;
+  spareFrame: Array<Frame> = [];
+
   constructor() {}
 
   rollCalc(rollCount: number, frameCount: number) {
@@ -27,8 +30,11 @@ export class ScoringService {
     if (frameCount <= 9) {
       if (rollCount === 0) {
         this.roll1Pins = this.setPins();
+        this.roll1$.next(this.roll1Pins);
         if (this.roll1Pins === 'X') {
           this.createStrikeFrame(frameCt, rollCount);
+        } else if (this.spareFrame.length > 0) {
+          this.addSpareScore(this.roll1Pins);
         } else {
           this.totalScore += this.roll1Pins;
           this.createFrame(frameCt, rollCount);
@@ -60,6 +66,7 @@ export class ScoringService {
   }
 
   createFrame(frame: number, rollCount: number) {
+    let frameScore = 0;
     this.frame = {
       frame: frame,
       roll1: this.roll1Pins,
@@ -69,10 +76,14 @@ export class ScoringService {
     };
 
     if (rollCount === 1) {
-      this.games.push(this.frame);
+      frameScore = this.roll1Pins + this.roll2Pins;
+      if (frameScore === 10) {
+        this.createSpare(this.frame);
+      } else {
+        this.games.push(this.frame);
+        this.gameObj$.next(this.games);
+      }
     }
-
-    this.gameObj$.next(this.games);
   }
 
   setTenthFrame(rollCount: number) {
@@ -87,6 +98,8 @@ export class ScoringService {
       this.roll2Pins = this.setPins();
       this.totalScore += this.roll2Pins;
       this.isBonusRoll = this.roll2Pins === 'X' ? true : false;
+      this.tenthFrameRollCt =
+        this.isBonusRoll === true ? 3 : this.tenthFrameRollCt;
     }
 
     if (rollCount === 2 && this.isBonusRoll) {
@@ -99,6 +112,8 @@ export class ScoringService {
         roll3: this.roll3Pins,
         score: this.totalScore,
       };
+      this.tenthFrameRollCt =
+        this.isBonusRoll === true ? 3 : this.tenthFrameRollCt;
 
       this.tenthFrame.push(this.frame);
       this.lastFrame$.next(this.tenthFrame);
@@ -172,5 +187,26 @@ export class ScoringService {
     }
 
     this.totalScore += this.games[i].score;
+  }
+
+  createSpare(frameObj: Frame) {
+    this.frame = {
+      frame: frameObj.frame,
+      roll1: this.roll1Pins,
+      roll2: '/',
+      roll3: this.roll3Pins,
+      score: '',
+    };
+    this.spareFrame.push(this.frame);
+    this.games.push(this.frame);
+    this.gameObj$.next(this.games);
+  }
+
+  addSpareScore(roll1Pins: any) {
+    let previousFrame = this.games.length - 1;
+    let previousScore = 10 + roll1Pins;
+    this.games[previousFrame].score = previousScore;
+    this.spareFrame = [];
+    this.gameObj$.next(this.games);
   }
 }
